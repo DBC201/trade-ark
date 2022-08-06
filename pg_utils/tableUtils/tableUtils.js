@@ -6,6 +6,10 @@ class UtilsInitializer {
     constructor(client) {
         this.accountUtilsObject = new AccountUtils(client);
     }
+
+    accountUtils() {
+        return this.accountUtilsObject;
+    }
 }
 
 module.exports = {

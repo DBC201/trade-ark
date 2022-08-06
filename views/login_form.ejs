@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<form method="POST" action="/account/register">
+    <p>Username:</p>
+    <p id="username_error"></p>
+    <input type="text" name="required_input" id="username">
+    <br>
+
+    <p>Password:</p>
+    <p id="password_error"></p>
+    <input type="password" name="required_input" id="password">
+    <br>
+
+    <p>Remember Me:</p>
+    <input type="checkbox" id="rememberMe" name="rememberMe" checked>
+    <br>
+
+    <br>
+
+    <p id="response"></p>
+    <button form="" onclick="submit()">Login</button>
+</form>
+
+<script>
+    function submit() {
+        let req_inputs = document.getElementsByName("required_input");
+        let missing_input = false;
+        for (let i=0; i<req_inputs.length; i++) {
+            if (!req_inputs[i].value) {
+                document.getElementById(req_inputs[i].id+"_error").innerText = "Please fill this in";
+                missing_input = true;
+            }
+            else {
+                document.getElementById(req_inputs[i].id+"_error").innerText = "";
+            }
+        }
+
+        if (missing_input) {
+            document.getElementById("response").innerText = "Some input fields are missing";
+            return;
+        }
+        else {
+            document.getElementById("response").innerText = "";
+        }
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/account/login");
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.send(JSON.stringify({
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value,
+            rememberMe: document.getElementById("rememberMe").checked
+        }));
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                window.location.href = "/account";
+            } else if (xhr.response === "already logged in") {
+                window.location.href = "/account/logout";
+            } else {
+                document.getElementById("response").innerText = xhr.response;
+            }
+        }
+    }
+</script>
+</body>
+</html>

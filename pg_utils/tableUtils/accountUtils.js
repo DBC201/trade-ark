@@ -6,8 +6,10 @@ class AccountUtils{
     }
 
     addAccount(username, email, hashedpassword) {
+        let client = this.client;
+        let table_name = this.table_name;
         return new Promise(function (resolve, reject) {
-           this.client.query(`INSERT INTO ${this.table_name} (username, email, hashed_password) VALUES (?,?,?)`,[username, email, hashedpassword], function (err, res) {
+           client.query(`INSERT INTO ${table_name} (username, email, hashed_password) VALUES ($1,$2,$3)`,[username, email, hashedpassword], function (err, res) {
               if (err) {
                   reject(err);
               }
@@ -18,17 +20,38 @@ class AccountUtils{
         });
     }
 
-    getHashedPassword(account_id) {
+    getHashedPassword(username) {
+        let client = this.client;
+        let table_name = this.table_name;
         return new Promise(function (resolve, reject) {
-            this.client.query(`SELECT hashed_password FROM ${this.table_name} WHERE account_id=?`,[account_id], function (err, res) {
+            client.query(`SELECT account_id, hashed_password FROM ${table_name} WHERE username=$1`,[username], function (err, res) {
                 if (err) {
                     reject(err);
                 }
                 else {
-                    resolve(res);
+                    resolve(res.rows);
                 }
             });
         });
+    }
+
+    getUsernameAndEmail(username, email) {
+        let client = this.client;
+        let table_name = this.table_name;
+        return new Promise(function (resolve, reject) {
+            client.query(`SELECT username, email FROM ${table_name} WHERE username=$1 OR email=$2`, [username, email], function (err, res){
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(res.rows);
+                }
+            });
+        });
+    }
+
+    deleteAccount(account_id) {
+
     }
 }
 
