@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Item</title>
+    <script type="text/javascript" src="/public/submit.js"></script>
+</head>
+<body>
+<form>
+    <p>Item Name:</p>
+    <p id="item_name_error"></p>
+    <input type="text" name="required_input" id="item_name">
+    <br>
+
+    <p>Item Description:</p>
+    <p id="item_description_error"></p>
+    <input type="text" name="required_input" id="item_description">
+    <br>
+
+    <p>Item Price:</p>
+    <p id="item_price_error"></p>
+    <input type="number" name="required_input" id="item_price">
+    <br>
+
+    <p>Upload Picture</p>
+    <p id="image_input_error"></p>
+    <input type="file" accept="image/*" id="item_pictures" onchange="loadFile()" name="file_input" multiple>
+    <br>
+
+    <div id="item_pictures_display">
+
+    </div>
+
+    <img id="picture_display"  width="200"/>
+    <script>
+        function loadFile() {
+            let div = document.getElementById('item_pictures_display');
+            let pictures = document.getElementById("item_pictures").files;
+            for (let i=0; i<pictures.length; i++) {
+                let pic = document.createElement("img");
+                pic.src = URL.createObjectURL(pictures[i]);
+                div.append(pic);
+            }
+        }
+    </script>
+
+    <br>
+
+    <p id="response"></p>
+    <button form="" onclick="submit('/item/add', function (xhr) {
+        if (xhr.status === 200) {
+            window.location.href = xhr.response;
+        }
+        else {
+            document.getElementById('response').innerText = xhr.response;
+        }
+    })">Upload</button>
+
+</form>
+</body>
+</html>

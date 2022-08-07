@@ -20,7 +20,7 @@ class AccountUtils{
         });
     }
 
-    getHashedPassword(username) {
+    getIdAndHashedPassword(username) {
         let client = this.client;
         let table_name = this.table_name;
         return new Promise(function (resolve, reject) {
@@ -29,13 +29,18 @@ class AccountUtils{
                     reject(err);
                 }
                 else {
-                    resolve(res.rows);
+                    if (res.rows === undefined || res.rows.length === 0) {
+                        resolve(undefined);
+                    }
+                    else {
+                        resolve(res.rows[0]);
+                    }
                 }
             });
         });
     }
 
-    getUsernameAndEmail(username, email) {
+    getUsernameAndEmailMatches(username, email) {
         let client = this.client;
         let table_name = this.table_name;
         return new Promise(function (resolve, reject) {

@@ -13,4 +13,8 @@ const account = require(path.join(__dirname, "account.js"));
 router.get("/account*", account);
 router.post("/account*", account);
 
+const item = require(path.join(__dirname, "item.js"));
+router.get("/item*", item);
+router.post("/item*", item);
+
 module.exports = router;
