@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS items_for_sale
     account_id INTEGER NOT NULL,
     item_id SERIAL PRIMARY KEY,
     item_name TEXT NOT NULL,
+    item_thumbnail bytea NOT NULL,
     item_pictures bytea NOT NULL,
     item_description TEXT,
     item_price INTEGER NOT NULL,

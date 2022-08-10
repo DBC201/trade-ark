@@ -5,6 +5,16 @@ const utilsInitializer = require(path.join(__dirname, "..", "utils", "initialize
 
 const router = express.Router();
 
+router.get("/item/range", async function (req, res, next) {
+    try {
+        let id_start = req.query.id_start;
+        let id_end = req.query.id_end;
+        res.send(await utilsInitializer.itemsForSaleUtils().getItemRange(id_start, id_end));
+    } catch (e) {
+        next(e);
+    }
+});
+
 router.get("/item", function (req, res) {
     let item_id = req.query.item_id;
     if (!item_id) {
@@ -41,17 +51,18 @@ router.post("/item/add", async function (req, res, next) {
         }
         else {
             let item_name = req.body.item_name;
+            let item_thumbnail = req.body.item_thumbnail;
             let item_pictures = req.body.item_pictures;
             let item_description = req.body.item_description;
             let item_price = req.body.item_price;
             //console.log(req.body);
 
-            if (!item_name || !item_pictures || !item_description || !item_price) {
+            if (!item_name || !item_thumbnail || !item_pictures || !item_description || !item_price) {
                 res.status(400);
                 return res.send("Bad Request");
             }
 
-            let ret = await utilsInitializer.itemsForSaleUtils().addItem(req.session.account_id, item_name, item_pictures, item_description, item_price);
+            let ret = await utilsInitializer.itemsForSaleUtils().addItem(req.session.account_id, item_name, item_thumbnail, item_pictures, item_description, item_price);
             //console.log(ret);
             res.status(200);
             res.send("/");

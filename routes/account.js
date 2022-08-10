@@ -5,6 +5,27 @@ const router = express.Router();
 const utilsInitializer = require(path.join(__dirname, "..", "utils", "initializeUtils.js"));
 const bcrypt = require("bcrypt");
 
+let max_password = 37;
+let min_password = 8;
+
+function crediential_response(username, password) {
+    let max_namelength = 31;
+    let min_namelength = 3;
+    if (username.indexOf(' ') !== -1) {
+        return "You can't have spaces in your username!";
+    } else if (username.length < min_namelength) {
+        return `Username must be at least ${min_namelength} characters!`;
+    } else if (username.length > max_namelength) {
+        return `Username can't be longer than ${max_namelength} characters!`;
+    } else if (password.length < min_password) {
+        return `Password must be at least ${min_password} characters!`;
+    } else if (password.length > max_password) {
+        return `Password can't be longer than ${max_password} characters!`;
+    } else {
+        return false;
+    }
+}
+
 router.get("/account", async function (req, res, next) {
     try {
         if (!req.session.loggedin) {
@@ -91,6 +112,13 @@ router.post("/account/register", async function (req, res, next) {
             if (!username || !email || !password) {
                 res.status(400);
                 return res.send("Bad Request");
+            }
+
+            let cred_input_response = crediential_response(username, password);
+
+            if (cred_input_response) {
+                res.status(403);
+                return res.send(cred_input_response);
             }
 
             let matches = await utilsInitializer.accountUtils().getUsernameAndEmailMatches(username, email);

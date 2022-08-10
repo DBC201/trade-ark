@@ -2,17 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Trade Ark</title>
 </head>
 <body>
     <h1>test</h1>
     <% if (loggedin) { %>
         <a href="/account"><%= username %></a>
+        <br>
+        <br>
+        <a href="/account/logout">Log out</a>
     <% } else { %>
         <a href="/account/login">Login</a>
         <br>
         <br>
         <a href="/account/register">Register</a>
     <% } %>
+    <div id="items_for_sale">
+
+    </div>
+
+    <script>
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", "/item/range?id_start=1&id_end=10");
+        //xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.send();
+
+        xhr.onload = function () {
+            document.getElementById("items_for_sale").innerText = xhr.response;
+            console.log(xhr.response);
+        }
+    </script>
 </body>
 </html>

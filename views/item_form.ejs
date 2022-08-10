@@ -22,10 +22,17 @@
     <input type="number" name="required_input" id="item_price">
     <br>
 
-    <p>Upload Picture</p>
-    <p id="image_input_error"></p>
-    <input type="file" accept="image/*" id="item_pictures" onchange="loadFile()" name="file_input" multiple>
+    <p>Upload Thumbnail</p>
+    <p id="item_thumbnail_input_error"></p>
+    <input type="file" accept="image/*" id="item_thumbnail" onchange="loadThumbnail()" name="file_input">
     <br>
+
+    <p>Upload Picture(s)</p>
+    <p id="item_pictures_input_error"></p>
+    <input type="file" accept="image/*" id="item_pictures" onchange="loadItemImages()" name="file_input" multiple>
+    <br>
+
+    <img id="item_thumbnail_display">
 
     <div id="item_pictures_display">
 
@@ -33,7 +40,12 @@
 
     <img id="picture_display"  width="200"/>
     <script>
-        function loadFile() {
+        function loadThumbnail() {
+            let picture = document.getElementById("item_thumbnail").files[0];
+            document.getElementById("item_thumbnail_display").src = URL.createObjectURL(picture);
+        }
+
+        function loadItemImages() {
             let div = document.getElementById('item_pictures_display');
             let pictures = document.getElementById("item_pictures").files;
             for (let i=0; i<pictures.length; i++) {
