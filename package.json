@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aedes": "^0.47.0",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "connect-pg-simple": "^7.0.0",
@@ -19,6 +20,7 @@
     "express-session": "^1.17.3",
     "pg": "^8.7.3",
     "redis": "^4.2.0",
+    "ws": "^8.8.1",
     "yargs": "^17.5.1"
   }
 }
