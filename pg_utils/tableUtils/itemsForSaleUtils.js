@@ -1,3 +1,4 @@
+
 class ItemsForSaleUtils {
     constructor(client) {
         this.client = client;
@@ -88,7 +89,7 @@ class ItemsForSaleUtils {
             client.query(`SELECT item_id, item_name, item_thumbnail, item_price
                           FROM ${table_name}
                           WHERE $1 < item_id
-                            AND item_id < $2`, [id_start, id_end],
+                            AND item_id < $2 AND item_sold=FALSE`, [id_start, id_end],
                 function (err, res) {
                     if (err) {
                         reject(err);
@@ -97,6 +98,21 @@ class ItemsForSaleUtils {
                         resolve(res.rows);
                     }
                 });
+        });
+    }
+
+    markAsSold(item_id, buyer_id) {
+        let client = this.client;
+        let table_name = this.table_name;
+        return new Promise(function (resolve, reject) {
+           client.query(`UPDATE ${table_name} SET sold=TRUE WHERE item_id=$1 AND buyer_id=$2 AND sold=FALSE`, [item_id, buyer_id], function (err, res) {
+               if (err) {
+                   reject(err);
+               }
+               else {
+                   resolve(res);
+               }
+           });
         });
     }
 
