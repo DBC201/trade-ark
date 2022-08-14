@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS cart;
 DROP TABLE IF EXISTS items_for_sale;
 DROP TABLE IF EXISTS accounts;
 DROP FUNCTION IF EXISTS delete_account();
+DROP FUNCTION IF EXISTS purchase_remove();
 
 CREATE TABLE accounts
 (
@@ -39,17 +40,23 @@ CREATE FUNCTION delete_account() RETURNS trigger AS $$
     BEGIN
         DELETE FROM cart WHERE cart.account_id = old.account_id;
         DELETE FROM items_for_sale WHERE items_for_sale.account_id = old.account_id;
+        RETURN NULL;
     END;
 $$ LANGUAGE plpgsql;
 
 CREATE FUNCTION purchase_remove() RETURNS trigger AS $$
     BEGIN
-        DELETE FROM cart WHERE new.buyer_id = cart.account_id AND old.item_id = cart.item_id;
+        CASE WHEN new.item_sold=TRUE AND old.item_sold=FALSE THEN
+            DELETE FROM cart WHERE new.buyer_id = cart.account_id AND old.item_id = cart.item_id;
+        ELSE
+            ---RAISE EXCEPTION 'AHHA HH';
+        END CASE;
+        RETURN NULL;
     END;
 $$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS account_delete ON accounts;
-CREATE TRIGGER account_delete BEFORE DELETE ON accounts EXECUTE FUNCTION delete_account();
+CREATE TRIGGER account_delete BEFORE DELETE ON accounts EXECUTE PROCEDURE delete_account();
 
 DROP TRIGGER IF EXISTS item_sold ON items_for_sale;
-CREATE TRIGGER item_sold AFTER UPDATE OF item_sold ON items_for_sale WHEN ( new.item_sold=TRUE AND old.item_sold=FALSE ) EXECUTE FUNCTION purchase_remove();
+CREATE TRIGGER item_sold AFTER UPDATE OF buyer_id, item_sold ON items_for_sale EXECUTE PROCEDURE purchase_remove();

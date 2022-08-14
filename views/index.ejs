@@ -28,8 +28,15 @@
         xhr.send();
 
         xhr.onload = function () {
-            document.getElementById("items_for_sale").innerText = xhr.response;
-            console.log(xhr.response);
+            let item_display = document.getElementById("items_for_sale");
+            let items = JSON.parse(xhr.response);
+            console.log(items);
+            for (let i=0; i<items.length; i++) {
+                let anchor = document.createElement("a");
+                anchor.href = `/item?item_id=${items[i].item_id}`;
+                anchor.innerText = items[i].item_name;
+                item_display.append(anchor);
+            }
         }
     </script>
 </body>

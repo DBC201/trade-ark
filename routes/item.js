@@ -11,23 +11,28 @@ router.get("/item/range", async function (req, res, next) {
         let id_end = req.query.id_end;
         res.send(await utilsInitializer.itemsForSaleUtils().getItemRange(id_start, id_end));
     } catch (e) {
-        next(e);
+        res.send(e);
     }
 });
 
-router.get("/item", function (req, res) {
-    let item_id = req.query.item_id;
-    if (!item_id) {
-        res.status(400);
-        return res.send("Bad Request");
-    }
-    let item = utilsInitializer.itemsForSaleUtils().getItem(item_id);
-    if (item === undefined) {
-        res.status(404);
-        return res.send("Item not found");
-    }
+router.get("/item", async function (req, res, next) {
+    try{
 
-    res.render("item", item);
+        let item_id = req.query.item_id;
+        if (!item_id) {
+            res.status(400);
+            return res.render("generic", {message: "Bad Request"});
+        }
+        let item = await utilsInitializer.itemsForSaleUtils().getItem(item_id);
+        if (item === undefined) {
+            res.status(404);
+            return res.render("generic", {message: "item not found"});
+        }
+
+        res.render("item", item);
+    } catch (e) {
+        next(e);
+    }
 });
 
 router.post("/item/edit", function (req, res, next) {
@@ -61,6 +66,9 @@ router.post("/item/add", async function (req, res, next) {
                 res.status(400);
                 return res.send("Bad Request");
             }
+
+            item_pictures = JSON.stringify(item_pictures);
+            item_thumbnail = JSON.stringify(item_thumbnail);
 
             let ret = await utilsInitializer.itemsForSaleUtils().addItem(req.session.account_id, item_name, item_thumbnail, item_pictures, item_description, item_price);
             //console.log(ret);

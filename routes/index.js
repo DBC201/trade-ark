@@ -17,4 +17,8 @@ const item = require(path.join(__dirname, "item.js"));
 router.get("/item*", item);
 router.post("/item*", item);
 
+const cart = require(path.join(__dirname, "cart.js"));
+router.get("/cart*", cart);
+router.post("/cart*", cart);
+
 module.exports = router;

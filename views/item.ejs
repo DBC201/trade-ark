@@ -2,9 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><%= item_name %>></title>
+    <title><%= item_name %></title>
 </head>
 <body>
-    <h1><%= item_description %></h1>
+    <h1><%= item_name %></h1>
+    <p><%= item_description %></p>
+    <div id="pictures_display"></div>
+    <p id="response"></p>
+    <button onclick="add_to_cart()">Add to cart</button>
+<script>
+    let pictures = <%- item_pictures %>;
+    let pic_div = document.getElementById('pictures_display');
+    for (let i=0; i<pictures.length; i++) {
+        let pic = document.createElement("img");
+        pic.src = pictures[i];
+        pic_div.append(pic);
+    }
+
+    function add_to_cart() {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/cart/add");
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.send(JSON.stringify({item_id: "<%= item_id %>"}));
+
+        xhr.onload = function () {
+            document.getElementById("response").innerText = xhr.response;
+            window.location.href = "/cart";
+        }
+    }
+</script>
 </body>
 </html>

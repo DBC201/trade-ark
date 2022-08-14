@@ -7,8 +7,45 @@
     <title>Cart</title>
 </head>
 <body>
-    <div>
+    <table id="items_table">
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>thumbnail</th>
+            <th>price</th>
+            <th>is sold</th>
+        </tr>
+        <% let item_ids = []; %>
+        <% for (let i=0; i<items.length; i++) { %>
+            <% item_ids.push(items[i].item_id);%>
+            <tr id="<%= items[i].item_id %>">
+                <td><%=items[i].item_id %></td>
+                <td><%=items[i].item_name %></td>
+                <td><img id="img_<%= i %>"></td>
+                <td><%= items[i].item_price %></td>
+                <td><%= items[i].item_sold %></td>
+            </tr>
+        <script>
+            let src = <%- items[i].item_thumbnail %>[0];
+            document.getElementById("img_<%= i %>").src = src;
+        </script>
+        <% } %>
+    </table>
+    <p id="response"></p>
+    <button onclick="purchase_all()">Purchase All</button>
 
-    </div>
 </body>
+<script>
+    let xhr = new XMLHttpRequest();
+    function purchase_all() {
+        xhr.open("POST", "/cart/purchase");
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.send(JSON.stringify({items: [<%- item_ids %>]}));
+
+        xhr.onload = function () {
+            document.getElementById("response").innerText = xhr.response;
+            window.location.reload();
+        }
+    }
+</script>
 </html>

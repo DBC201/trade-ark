@@ -88,8 +88,8 @@ class ItemsForSaleUtils {
         return new Promise(function (resolve, reject) {
             client.query(`SELECT item_id, item_name, item_thumbnail, item_price
                           FROM ${table_name}
-                          WHERE $1 < item_id
-                            AND item_id < $2 AND item_sold=FALSE`, [id_start, id_end],
+                          WHERE $1 <= item_id
+                            AND item_id <= $2 AND item_sold=FALSE`, [id_start, id_end],
                 function (err, res) {
                     if (err) {
                         reject(err);
@@ -105,7 +105,7 @@ class ItemsForSaleUtils {
         let client = this.client;
         let table_name = this.table_name;
         return new Promise(function (resolve, reject) {
-           client.query(`UPDATE ${table_name} SET sold=TRUE WHERE item_id=$1 AND buyer_id=$2 AND sold=FALSE`, [item_id, buyer_id], function (err, res) {
+           client.query(`UPDATE ${table_name} SET item_sold=TRUE, buyer_id=$2 WHERE item_id=$1 AND item_sold=FALSE`, [item_id, buyer_id], function (err, res) {
                if (err) {
                    reject(err);
                }

@@ -64,13 +64,23 @@ router.post("/cart/remove", function (req, res, next) {
     }
 });
 
-router.post("/cart/purchase", function (req, res) {
-    if (!req.session.loggedin) {
-        res.status(403);
-        res.send("not logged in");
-    } else {
-        let account_id = req.session.account_id;
-        // TODO
+router.post("/cart/purchase", async function (req, res, next) {
+    try {
+        if (!req.session.loggedin) {
+            res.status(403);
+            res.send("not logged in");
+        } else {
+            let account_id = req.session.account_id;
+            let items = req.body.items;
+
+            for (let i=0; i<items.length; i++) {
+                await utilsInitializer.itemsForSaleUtils().markAsSold(items[i], req.session.account_id);
+            }
+            res.status(200);
+            return res.send("OK");
+        }
+    } catch (e) {
+        next(e);
     }
 });
 
