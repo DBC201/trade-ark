@@ -1,9 +1,11 @@
 const path = require("path");
-const pool = require(path.join(__dirname, "pool.js"));
+require("dotenv").config({path: path.join(__dirname, "..", ".env.local")});
+const DatabaseWrapper = require(path.join(__dirname, "..", "sqlite_utils", "main.js")).Database;
 
-const UtilsInitializer = require(path.join(__dirname, "..", "pg_utils", "main.js")).Utils.UtilsInitializer;
+const databaseWrapper = new DatabaseWrapper(process.env.abs_db_path);
 
-const utilsInitializer = new UtilsInitializer(pool);
-// assuming utilsInitializer only uses queries
+const UtilsInitializer = require(path.join(__dirname, "..", "sqlite_utils", "main.js")).Utils.UtilsInitializer;
+
+const utilsInitializer = new UtilsInitializer(databaseWrapper);
 
 module.exports = utilsInitializer;

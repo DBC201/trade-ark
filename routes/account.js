@@ -26,16 +26,12 @@ function crediential_response(username, password) {
     }
 }
 
-router.get("/account", async function (req, res, next) {
-    try {
-        if (!req.session.loggedin) {
-            req.session.redirect = req.session.originalUrl;
-            res.redirect("/account/login");
-        } else {
-            res.render("account", {username: req.session.username, items: await utilsInitializer.itemsForSaleUtils().getUserItemIds(req.session.account_id)});
-        }
-    } catch (e) {
-        next(e);
+router.get("/account", function (req, res, next) {
+    if (!req.session.loggedin) {
+        req.session.redirect = req.session.originalUrl;
+        res.redirect("/account/login");
+    } else {
+        res.render("account", { username: req.session.username, items: utilsInitializer.itemsForSaleUtils().getUserItemIds(req.session.account_id) });
     }
 });
 
@@ -47,47 +43,44 @@ router.get("/account/login", function (req, res) {
     }
 });
 
-router.post("/account/login", async function (req, res, next) {
-    try {
-        if (req.session.loggedin) {
-            res.status(403);
-            return res.send("already logged in");
-        } else {
-            let username = req.body.username;
-            let password = req.body.password;
+router.post("/account/login", function (req, res, next) {
+    if (req.session.loggedin) {
+        res.status(403);
+        return res.send("already logged in");
+    } else {
+        let username = req.body.username;
+        let password = req.body.password;
 
-            if (!username || !password) {
-                res.status(400);
-                return res.send("Bad Request");
-            }
-
-            let row = await utilsInitializer.accountUtils().getIdAndHashedPassword(username);
-            if (row === undefined) {
-                res.status(403);
-                return res.send("invalid credientials");
-            }
-            bcrypt.compare(password, row.hashed_password, function (err, match) {
-                if (err) {
-                    next(err);
-                } else if (match) {
-                    req.session.loggedin = true;
-                    req.session.username = username;
-                    req.session.account_id = row.account_id;
-                    if (req.body.rememberMe) {
-                        req.session.cookie.maxAge = 86400000 * 30;
-                    }
-                    let redirect = req.session.redirect || '/';
-                    delete req.session.redirect;
-                    res.status(200);
-                    res.send(redirect);
-                } else {
-                    res.status(403);
-                    res.send("invalid credientials");
-                }
-            });
+        if (!username || !password) {
+            res.status(400);
+            return res.send("Bad Request");
         }
-    } catch (e) {
-        next(e);
+
+        let row = utilsInitializer.accountUtils().getIdAndHashedPassword(username);
+        if (row === undefined) {
+            res.status(403);
+            return res.send("invalid credientials");
+        }
+        
+        bcrypt.compare(password, row.hashed_password, function (err, match) {
+            if (err) {
+                next(err);
+            } else if (match) {
+                req.session.loggedin = true;
+                req.session.username = username;
+                req.session.account_id = row.account_id;
+                if (req.body.rememberMe) {
+                    req.session.cookie.maxAge = 86400000 * 30;
+                }
+                let redirect = req.session.redirect || '/';
+                delete req.session.redirect;
+                res.status(200);
+                res.send(redirect);
+            } else {
+                res.status(403);
+                res.send("invalid credientials");
+            }
+        });
     }
 });
 
@@ -121,12 +114,12 @@ router.post("/account/register", async function (req, res, next) {
                 return res.send(cred_input_response);
             }
 
-            let matches = await utilsInitializer.accountUtils().getUsernameAndEmailMatches(username, email);
+            let matches = utilsInitializer.accountUtils().getUsernameAndEmailMatches(username, email);
 
             if (matches === undefined || matches.length === 0) {
                 let salt = await bcrypt.genSalt();
                 let hashedpassword = await bcrypt.hash(password, salt);
-                await utilsInitializer.accountUtils().addAccount(username, email, hashedpassword);
+                utilsInitializer.accountUtils().addAccount(username, email, hashedpassword);
                 res.status(200);
                 return res.send("OK");
             } else if (matches.length > 1) {

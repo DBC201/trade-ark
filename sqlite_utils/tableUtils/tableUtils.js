@@ -5,10 +5,10 @@ const ItemsForSaleUtils = require(path.join(__dirname, "itemsForSaleUtils.js"));
 const CartUtils = require(path.join(__dirname, "cartUtils.js"));
 
 class UtilsInitializer {
-    constructor(client) {
-        this.accountUtilsObject = new AccountUtils(client);
-        this.itemsForSaleUtilsObject = new ItemsForSaleUtils(client);
-        this.cartUtilsObject = new CartUtils(client);
+    constructor(databaseWrapper) {
+        this.accountUtilsObject = new AccountUtils(databaseWrapper);
+        this.itemsForSaleUtilsObject = new ItemsForSaleUtils(databaseWrapper);
+        this.cartUtilsObject = new CartUtils(databaseWrapper);
     }
 
     accountUtils() {

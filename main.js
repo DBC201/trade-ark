@@ -48,12 +48,11 @@ if (argv.redis) {
         })
     }
 } else {
-    const pgSession = require('connect-pg-simple')(session);
-    const pool = require(path.join(__dirname, "utils", "pool.js"));
+    const SqliteStore = require("better-sqlite3-session-store")(session);
+    const Sqlite = require("better-sqlite3");
     session_parameter = {
-        store: new pgSession({
-            pool: pool,
-            createTableIfMissing: true,
+        store: new SqliteStore({
+            client: new Sqlite(process.env.abs_db_path),
         }),
         secret: process.env.session_secret,
         saveUninitialized: false,
