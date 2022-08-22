@@ -3,7 +3,7 @@
     <title>Home Page | Trade Ark</title>
     <link rel="stylesheet" href="/public/stylesheet.css">
 </head>
-<body>
+<body onload="list()">
     <header id="main-header">Trade Ark</header>
     
     <nav id="navbar">
@@ -21,29 +21,60 @@
         </div>
     </nav>
 
-    <div id="items_for_sale" style="text-align: center;">
-
+    <div style="text-align: center;">
+        <table id="items_table">
+            <tr>
+                <th>name</th>
+                <th>thumbnail</th>
+                <th>price</th>
+            </tr>
+        </table>
     </div>
+    <br>
+    <button onclick="list()">List more items</button>
     
     
     <script>
-        let xhr = new XMLHttpRequest();
-        xhr.open("GET", "/item/range?id_start=1&id_end=10");
-        //xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        xhr.send();
+        let start = 1;
 
-        xhr.onload = function () {
-            let item_display = document.getElementById("items_for_sale");
-            let items = JSON.parse(xhr.response);
-            console.log(items);
-            for (let i=0; i<items.length; i++) {
-                let anchor = document.createElement("a");
-                anchor.href = `/item?item_id=${items[i].item_id}`;
-                anchor.innerText = items[i].item_name;
-                item_display.append(anchor);
-                item_display.append(document.createElement("br"));
+        function list() {
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", `/item/range?id_start=${start}&id_end=${start+=10}`);
+            //xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr.send();
+
+            xhr.onload = function () {
+                let item_display = document.getElementById("items_table");
+                let items = JSON.parse(xhr.response);
+                //console.log(items);
+                for (let i=0; i<items.length; i++) {
+                    let tr = document.createElement("tr");
+                    let name_td = document.createElement("td");
+                    let thumbnail_td = document.createElement("td");
+                    let price_td = document.createElement("td");
+
+                    let anchor = document.createElement("a");
+                    anchor.href = `/item?item_id=${items[i].item_id}`;
+                    anchor.innerText = items[i].item_name;
+                    name_td.append(anchor);
+
+                    let thumbnail = document.createElement("img");
+                    thumbnail.style = "height: 125px";
+                    thumbnail.alt = "no thumbnail";
+                    thumbnail.src = JSON.parse(items[i].item_thumbnail)[0];
+                    thumbnail_td.append(thumbnail);
+
+                    price_td.append('$'+items[i].item_price.toString());
+
+                    tr.append(name_td);
+                    tr.append(thumbnail_td);
+                    tr.append(price_td);
+
+                    item_display.append(tr);
+                }
             }
         }
+        
     </script>
 </body>
 </html>
