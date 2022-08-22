@@ -31,7 +31,7 @@ class ItemsForSaleUtils {
         return this.databaseWrapper.get_all(`SELECT item_id, item_name, item_thumbnail, item_price
         FROM ${this.table_name}
         WHERE ? <= item_id
-          AND item_id <= ? AND item_sold=FALSE`, [id_start, id_end]);
+          AND item_id < ? AND item_sold=FALSE`, [id_start, id_end]);
     }
 
     editItem(account_id, item_id, item_name, item_thumbnail, item_pictures, item_description, item_price) {
