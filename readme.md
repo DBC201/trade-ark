@@ -1,6 +1,6 @@
 # TRADE ARK
 
-- Create .env.local and set environment variables
+- Create a file called .env.local in project root and set environment variables
     - Ex:
     ```
     abs_db_path="C:\Users\dbc20\Documents\github\trade-ark\sqlite\database.db"
