@@ -11,4 +11,4 @@
     ```
     - https values can be left blank
 - Run ```node overwrite_database.js```
-- Run ```node main.js```
+- Run ```node trade_ark_main.js```
