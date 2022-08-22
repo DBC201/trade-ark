@@ -9,6 +9,6 @@
 
     http_port="80"
     ```
-    - You can leave https values blank if you are not going to use https
+    - https values can be left blank
 - Run ```node overwrite_database.js```
 - Run ```node main.js```
