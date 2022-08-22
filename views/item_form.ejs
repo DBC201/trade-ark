@@ -63,6 +63,7 @@
             }
             function loadItemImages() {
                 let div = document.getElementById('item_pictures_display');
+                div.replaceChildren();
                 let pictures = document.getElementById("item_pictures").files;
                 for (let i=0; i<pictures.length; i++) {
                     let pic = document.createElement("img");
