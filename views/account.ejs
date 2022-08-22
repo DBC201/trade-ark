@@ -34,7 +34,7 @@
             <% let item_ids = []; %>
             <% for (let i=0; i<listed_items.length; i++) { %>
                 <tr id="<%= listed_items[i].item_id %>" <% if (i % 2 === 0) { %> style="background-color: gray;" <% } %>>
-                    <td><%=listed_items[i].item_name %></td>
+                    <td><a href="/item?item_id=<%= listed_items[i].item_id %>"><%=listed_items[i].item_name %></a></td>
                     <td><img id="img_<%= i %>" style="height: 125px" alt="no thumbnail"></td>
                     <td>$<%= listed_items[i].item_price %></td>
                     <td><%= listed_items[i].item_sold === 1 ? "yes" : "no" %></td>

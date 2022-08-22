@@ -23,7 +23,7 @@ class ItemsForSaleUtils {
     }
 
     getListedItems(account_id) {
-        return this.databaseWrapper.get_all(`SELECT item_name, item_thumbnail, item_price, item_sold, shipping_address
+        return this.databaseWrapper.get_all(`SELECT I.item_id, item_name, item_thumbnail, item_price, item_sold, shipping_address
         FROM ${this.table_name} I LEFT OUTER JOIN purchase P on I.item_id=P.item_id WHERE I.account_id = ?`, [account_id]);
     }
 
