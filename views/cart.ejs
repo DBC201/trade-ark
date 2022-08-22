@@ -35,7 +35,7 @@
                 <% if (!items[i].item_sold) item_ids.push(items[i].item_id);%>
                 <tr id="<%= items[i].item_id %>" <% if (i % 2 === 0) { %> style="background-color: gray;" <% } %>>
                     <td><%=items[i].item_name %></td>
-                    <td><img id="img_<%= i %>" alt="no thumbnail"></td>
+                    <td><img id="img_<%= i %>" style="height: 125px;" alt="no thumbnail"></td>
                     <td>$<%= items[i].item_price %></td>
                     <td><%= items[i].item_sold === 1 ? "yes" : "no" %></td>
                     <td><button onclick="remove_item(<%= items[i].item_id %>)">remove</button></td>

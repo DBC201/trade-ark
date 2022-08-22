@@ -29,6 +29,7 @@
                 <th>thumbnail</th>
                 <th>price</th>
                 <th>sold</th>
+                <th>address to ship</th>
             </tr>
             <% let item_ids = []; %>
             <% for (let i=0; i<listed_items.length; i++) { %>
@@ -37,6 +38,7 @@
                     <td><img id="img_<%= i %>" style="height: 125px" alt="no thumbnail"></td>
                     <td>$<%= listed_items[i].item_price %></td>
                     <td><%= listed_items[i].item_sold === 1 ? "yes" : "no" %></td>
+                    <td><%= listed_items[i].shipping_address %></td>
                 </tr>
             <script>
                 document.getElementById("img_<%= i %>").src = <%- listed_items[i].item_thumbnail %>[0];
