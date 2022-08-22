@@ -41,8 +41,7 @@
                     <td><button onclick="remove_item(<%= items[i].item_id %>)">remove</button></td>
                 </tr>
             <script>
-                let src = <%- items[i].item_thumbnail %>[0];
-                document.getElementById("img_<%= i %>").src = src;
+                document.getElementById("img_<%= i %>").src = <%- items[i].item_thumbnail %>[0];
             </script>
             <% } %>
         </table>
