@@ -77,6 +77,7 @@
     
         <p id="response"></p>
         <button form="" onclick="submit('/item/add', function (xhr) {
+            document.getElementById('response') = 'Uploading item, please wait...'; 
             if (xhr.status === 200) {
                 window.location.href = xhr.response;
             }
