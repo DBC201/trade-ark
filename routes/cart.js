@@ -48,12 +48,9 @@ router.post("/cart/remove", function (req, res, next) {
             return res.send("Bad Request");
         }
 
-        utilsInitializer.cartUtils().removeFromCart(account_id, item_id).then(function () {
-            res.status(200);
-            res.send("OK");
-        }).catch(function (err) {
-            next(err);
-        });
+        utilsInitializer.cartUtils().removeFromCart(account_id, item_id);
+        res.status(200);
+        return res.send("OK");
     }
 });
 
