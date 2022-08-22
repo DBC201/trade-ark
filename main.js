@@ -62,8 +62,8 @@ if (argv.redis) {
 
 app.use(session(session_parameter));
 
-const http_port = 80;
-const https_port = 443;
+const http_port = process.env.http_port;
+const https_port = process.env.https_port;
 
 const http = require("http");
 let http_server;
