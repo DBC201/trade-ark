@@ -7,7 +7,7 @@
 
     session_secret="af4a0399aec7d17471d374550fa41199"
 
-    http_port="80"
+    http_port=80
     ```
     - https values can be left blank
 - Run ```node overwrite_database.js```
