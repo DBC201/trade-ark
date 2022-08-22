@@ -1,4 +1,4 @@
-# TRADE-ARK
+# TRADE ARK
 
 - Create .env.local and set environment variables
     - Ex:
