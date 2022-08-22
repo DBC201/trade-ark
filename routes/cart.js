@@ -12,7 +12,7 @@ router.get("/cart", function (req, res, next) {
         res.redirect("/account/login");
     } else {
         let rows = utilsInitializer.cartUtils().getCart(req.session.account_id);
-        res.render("cart", { items: rows });
+        res.render("cart", { items: rows, loggedin: req.session.loggedin });
     }
 });
 
@@ -62,11 +62,13 @@ router.post("/cart/purchase", function (req, res, next) {
         res.status(403);
         res.send("not logged in");
     } else {
-        let account_id = req.session.account_id;
+        let shipping_address = req.body.shipping_address;
+        let billing_address = req.body.billing_address;
         let items = req.body.items;
+        let account_id = req.session.account_id;
 
         for (let i = 0; i < items.length; i++) {
-            utilsInitializer.itemsForSaleUtils().markAsSold(items[i], req.session.account_id);
+            utilsInitializer.purchaseUtils().addPurchase(items[i], account_id, shipping_address, billing_address);
         }
         res.status(200);
         return res.send("OK");

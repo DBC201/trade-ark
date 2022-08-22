@@ -99,5 +99,5 @@ app.post("*", routes);
 app.use(function (err, req, res, next) {
     console.log(err);
     res.status(500);
-    res.render("generic", {message: "unexpected error"});
+    res.render("generic", {message: "unexpected error", loggedin: req.session.loggedin});
 });

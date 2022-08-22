@@ -14,8 +14,7 @@ class CartUtils {
 
     getCart(account_id) {
         return this.databaseWrapper.get_all(`SELECT S.item_id, item_name, item_thumbnail, item_price, item_sold FROM items_for_sale S
-        LEFT OUTER JOIN cart C ON C.account_id=S.account_id AND C.item_id=S.item_id
-                                  WHERE C.account_id=?`, [account_id]);
+        LEFT OUTER JOIN cart C ON C.item_id=S.item_id WHERE C.account_id=?`, [account_id]);
     }
 }
 

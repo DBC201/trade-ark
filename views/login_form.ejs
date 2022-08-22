@@ -1,40 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Login | Trade Ark</title>
+    <link rel="stylesheet" href="/public/stylesheet.css">
     <script type="text/javascript" src="/public/submit.js"></script>
 </head>
 <body>
-<form>
-    <p>Username:</p>
-    <p id="username_error"></p>
-    <input type="text" name="required_input" id="username">
-    <br>
+    <header id="main-header">Trade Ark</header>
+    
+    <nav id="navbar">
+        <div>
+            <a href="/">Home</a>
+            <% if (loggedin) { %>
+                <a href="/item/add">Add Item</a>
+                <a href="/cart">Cart</a>
+                <a href="/account">My Account</a>
+                <a href="/account/logout">Logout</a>
+            <% } else { %>
+                <a href="/account/register">Register</a>
+                <a href="/account/login">Login</a>
+            <% } %>
+        </div>
+    </nav>
 
-    <p>Password:</p>
-    <p id="password_error"></p>
-    <input type="password" name="required_input" id="password">
-    <br>
-
-    <p>Remember Me:</p>
-    <input type="checkbox" id="rememberMe" name="checkbox_input" checked>
-    <br>
-
-    <br>
-
-    <p id="response"></p>
-    <button form="" onclick="submit('/account/login', function (xhr) {
-            if (xhr.status === 200) {
-                window.location.href = '/account';
-            } else if (xhr.response === 'already logged in') {
-                window.location.href = '/account/logout';
-            } else {
-                document.getElementById('response').innerText = xhr.response;
-            }
-    })">Login</button>
-</form>
-
-
+    <div style="text-align: center;">
+        <p>Username:</p>
+        <p id="username_error"></p>
+        <input type="text" name="required_input" id="username">
+        <br>
+    
+        <p>Password:</p>
+        <p id="password_error"></p>
+        <input type="password" name="required_input" id="password">
+        <br>
+    
+        <p>Remember Me:</p>
+        <input type="checkbox" id="rememberMe" name="checkbox_input" checked>
+        <br>
+    
+        <br>
+    
+        <p id="response"></p>
+        <button form="" onclick="submit('/account/login', function (xhr) {
+                if (xhr.status === 200) {
+                    window.location.href = '/account';
+                } else if (xhr.response === 'already logged in') {
+                    window.location.href = '/account/logout';
+                } else {
+                    document.getElementById('response').innerText = xhr.response;
+                }
+        })">Login</button>
+    </div>
+    
 </body>
 </html>

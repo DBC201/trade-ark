@@ -1,73 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Add Item</title>
+    <title>Add Item | Trade Ark</title>
+    <link rel="stylesheet" href="/public/stylesheet.css">
     <script type="text/javascript" src="/public/submit.js"></script>
 </head>
 <body>
-<form>
-    <p>Item Name:</p>
-    <p id="item_name_error"></p>
-    <input type="text" name="required_input" id="item_name">
-    <br>
+    <header id="main-header">Trade Ark</header>
+    
+    <nav id="navbar">
+        <div>
+            <a href="/">Home</a>
+            <% if (loggedin) { %>
+                <a href="/item/add">Add Item</a>
+                <a href="/cart">Cart</a>
+                <a href="/account">My Account</a>
+                <a href="/account/logout">Logout</a>
+            <% } else { %>
+                <a href="/account/register">Register</a>
+                <a href="/account/login">Login</a>
+            <% } %>
+        </div>
+    </nav>
 
-    <p>Item Description:</p>
-    <p id="item_description_error"></p>
-    <input type="text" name="required_input" id="item_description">
-    <br>
+    <div style="text-align: center;">
+        <p>Item Name:</p>
+        <p id="item_name_error"></p>
+        <input type="text" name="required_input" id="item_name">
+        <br>
 
-    <p>Item Price:</p>
-    <p id="item_price_error"></p>
-    <input type="number" name="required_input" id="item_price">
-    <br>
+        <p>Item Description:</p>
+        <p id="item_description_error"></p>
+        <textarea type="text" name="required_input" id="item_description"></textarea>
+        <br>
 
-    <p>Upload Thumbnail</p>
-    <p id="item_thumbnail_input_error"></p>
-    <input type="file" accept="image/*" id="item_thumbnail" onchange="loadThumbnail()" name="file_input" required>
-    <br>
+        <p>Item Price:</p>
+        <p id="item_price_error"></p>
+        <input type="number" name="required_input" id="item_price">
+        <br>
 
-    <p>Upload Picture(s)</p>
-    <p id="item_pictures_input_error"></p>
-    <input type="file" accept="image/*" id="item_pictures" onchange="loadItemImages()" name="file_input" multiple>
-    <br>
+        <p>Upload Thumbnail</p>
+        <p id="item_thumbnail_input_error"></p>
+        <input type="file" accept="image/*" id="item_thumbnail" onchange="loadThumbnail()" name="file_input">
+        <br>
 
-    <img id="item_thumbnail_display">
+        <p>Upload Picture(s)</p>
+        <p id="item_pictures_input_error"></p>
+        <input type="file" accept="image/*" id="item_pictures" onchange="loadItemImages()" name="file_input" multiple>
+        <br>
 
-    <div id="item_pictures_display">
+        <p>Uploaded Thumbnail:</p>
+        <img id="item_thumbnail_display" style="height: 125px;">
 
-    </div>
+        <p>Uploaded Pictures:</p>
+        <div id="item_pictures_display">
 
-    <img id="picture_display"  width="200"/>
-    <script>
-        function loadThumbnail() {
-            let picture = document.getElementById("item_thumbnail").files[0];
-            document.getElementById("item_thumbnail_display").src = URL.createObjectURL(picture);
-        }
+        </div>
 
-        function loadItemImages() {
-            let div = document.getElementById('item_pictures_display');
-            let pictures = document.getElementById("item_pictures").files;
-            for (let i=0; i<pictures.length; i++) {
-                let pic = document.createElement("img");
-                pic.src = URL.createObjectURL(pictures[i]);
-                div.append(pic);
+        <script>
+            function loadThumbnail() {
+                let picture = document.getElementById("item_thumbnail").files[0];
+                document.getElementById("item_thumbnail_display").src = URL.createObjectURL(picture);
             }
-        }
-    </script>
-
-    <br>
-
-    <p id="response"></p>
-    <button form="" onclick="submit('/item/add', function (xhr) {
-        if (xhr.status === 200) {
-            window.location.href = xhr.response;
-        }
-        else {
-            document.getElementById('response').innerText = xhr.response;
-        }
-    })">Upload</button>
-
-</form>
+            function loadItemImages() {
+                let div = document.getElementById('item_pictures_display');
+                let pictures = document.getElementById("item_pictures").files;
+                for (let i=0; i<pictures.length; i++) {
+                    let pic = document.createElement("img");
+                    pic.src = URL.createObjectURL(pictures[i]);
+                    pic.style = "height: 250px";
+                    div.append(pic);
+                    div.append(document.createElement("br"));
+                    div.append(document.createElement("br"));
+                }
+            }
+        </script>
+    
+        <p id="response"></p>
+        <button form="" onclick="submit('/item/add', function (xhr) {
+            if (xhr.status === 200) {
+                window.location.href = xhr.response;
+            }
+            else {
+                document.getElementById('response').innerText = xhr.response;
+            }
+        })">Upload</button>
+    </div>
 </body>
 </html>

@@ -1,35 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <title><%= item_name %></title>
+    <title>
+        <%= item_name %> | Trade Ark
+    </title>
+    <link rel="stylesheet" href="/public/stylesheet.css">
 </head>
+
 <body>
-    <h1><%= item_name %></h1>
-    <p><%= item_description %></p>
-    <div id="pictures_display"></div>
-    <p id="response"></p>
-    <button onclick="add_to_cart()">Add to cart</button>
-<script>
-    let pictures = <%- item_pictures %>;
-    let pic_div = document.getElementById('pictures_display');
-    for (let i=0; i<pictures.length; i++) {
-        let pic = document.createElement("img");
-        pic.src = pictures[i];
-        pic_div.append(pic);
-    }
+    <header id="main-header">Trade Ark</header>
+    
+    <nav id="navbar">
+        <div>
+            <a href="/">Home</a>
+            <% if (loggedin) { %>
+                <a href="/item/add">Add Item</a>
+                <a href="/cart">Cart</a>
+                <a href="/account">My Account</a>
+                <a href="/account/logout">Logout</a>
+            <% } else { %>
+                <a href="/account/register">Register</a>
+                <a href="/account/login">Login</a>
+            <% } %>
+        </div>
+    </nav>
+    
+    <div style="text-align: center;">
+        <h1>Name: <%= item_name %></h1>
 
-    function add_to_cart() {
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "/cart/add");
-        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        xhr.send(JSON.stringify({item_id: "<%= item_id %>"}));
+        <h2>Price: $<%= item_price %></h2>
+    
+        <h2>Pictures: </h2>
 
-        xhr.onload = function () {
-            document.getElementById("response").innerText = xhr.response;
-            window.location.href = "/cart";
+        <div id="pictures_display" style="text-align: center;">
+    
+        </div>
+    
+        <h3>Description: </h3>
+        <p><%= item_description %></p>
+        <br>
+    
+        <% if (item_sold) { %>
+            <button disabled> This item has been sold </button>
+        <% } else { %>
+            <button onclick="add_to_cart()">Add to cart</button>
+        <% } %>
+    </div>
+
+    <script>
+        let pictures = <%- item_pictures %>;
+        let pic_div = document.getElementById('pictures_display');
+        let thumbnail = document.createElement("img");
+        thumbnail.src = <%- item_thumbnail %>;
+        thumbnail.class = "item-image";
+        thumbnail.style = "height: 125px";
+        pic_div.append(thumbnail);
+        pic_div.append(document.createElement("br"));
+        pic_div.append(document.createElement("br"));
+        for (let i = 0; i < pictures.length; i++) {
+            let pic = document.createElement("img");
+            pic.src = pictures[i];
+            pic.style = "height: 250px";
+            pic_div.append(pic);
+            pic_div.append(document.createElement("br"));
+            pic_div.append(document.createElement("br"));
         }
-    }
-</script>
+        function add_to_cart() {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "/cart/add");
+            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr.send(JSON.stringify({ item_id: "<%= item_id %>" }));
+            xhr.onload = function () {
+                window.location.href = "/cart";
+            }
+        }
+    </script>
 </body>
+
 </html>

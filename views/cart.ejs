@@ -1,46 +1,121 @@
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Cart</title>
+    <title>Cart | Trade Ark</title>
+    <link rel="stylesheet" href="/public/stylesheet.css">
 </head>
 <body>
-    <table id="items_table">
-        <tr>
-            <th>id</th>
-            <th>name</th>
-            <th>thumbnail</th>
-            <th>price</th>
-            <th>is sold</th>
-        </tr>
-        <% let item_ids = []; %>
-        <% for (let i=0; i<items.length; i++) { %>
-            <% item_ids.push(items[i].item_id);%>
-            <tr id="<%= items[i].item_id %>">
-                <td><%=items[i].item_id %></td>
-                <td><%=items[i].item_name %></td>
-                <td><img id="img_<%= i %>"></td>
-                <td><%= items[i].item_price %></td>
-                <td><%= items[i].item_sold %></td>
-            </tr>
-        <script>
-            let src = <%- items[i].item_thumbnail %>[0];
-            document.getElementById("img_<%= i %>").src = src;
-        </script>
-        <% } %>
-    </table>
-    <p id="response"></p>
-    <button onclick="purchase_all()">Purchase All</button>
+    <header id="main-header">Trade Ark</header>
+    
+    <nav id="navbar">
+        <div>
+            <a href="/">Home</a>
+            <% if (loggedin) { %>
+                <a href="/item/add">Add Item</a>
+                <a href="/cart">Cart</a>
+                <a href="/account">My Account</a>
+                <a href="/account/logout">Logout</a>
+            <% } else { %>
+                <a href="/account/register">Register</a>
+                <a href="/account/login">Login</a>
+            <% } %>
+        </div>
+    </nav>
 
-</body>
+    <div style="text-align: center;">
+        <table id="items_table">
+            <tr>
+                <th>name</th>
+                <th>thumbnail</th>
+                <th>price</th>
+                <th>sold</th>
+                <th>remove</th>
+            </tr>
+            <% let item_ids = []; %>
+            <% for (let i=0; i<items.length; i++) { %>
+                <% if (!items[i].item_sold) item_ids.push(items[i].item_id);%>
+                <tr id="<%= items[i].item_id %>" <% if (i % 2 === 0) { %> style="background-color: gray;" <% } %>>
+                    <td><%=items[i].item_name %></td>
+                    <td><img id="img_<%= i %>" alt="no thumbnail"></td>
+                    <td>$<%= items[i].item_price %></td>
+                    <td><%= items[i].item_sold === 1 ? "yes" : "no" %></td>
+                    <td><button onclick="remove_item(<%= items[i].item_id %>)">remove</button></td>
+                </tr>
+            <script>
+                let src = <%- items[i].item_thumbnail %>[0];
+                document.getElementById("img_<%= i %>").src = src;
+            </script>
+            <% } %>
+        </table>
+        <br>
+        <p>Shipping Address:</p>
+        <p id="shipping_address_error"></p>
+        <textarea type="text" name="required_input" id="shipping_address"></textarea>
+        <br>
+        <br>
+        <p>Billing Address:</p>
+        <p id="billing_address_error"></p>
+        <textarea type="text" name="required_input" id="billing_address"></textarea>
+        <br>
+        <br>
+        <p id="response"></p>
+        <button onclick="purchase_all()">Purchase All</button>
+    
+    </body>
+    </div>
+
+
 <script>
-    let xhr = new XMLHttpRequest();
+    function remove_item(item_id) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/cart/remove");
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.send(JSON.stringify({
+            item_id: item_id
+        }));
+
+        xhr.onload = function () {
+            document.getElementById("response").innerText = xhr.response;
+            window.location.reload();
+        }
+    }
+
     function purchase_all() {
+        let shipping_address = document.getElementById("shipping_address").value;
+        let billing_address = document.getElementById("billing_address").value;
+        let values_missing = false;
+
+        if (!shipping_address) {
+            document.getElementById("shipping_address_error").innerText = "Please fill in the required fields";
+            values_missing = true;
+        }
+        else {
+            document.getElementById("shipping_address_error").innerText = "";
+        }
+
+        if (!billing_address) { 
+            document.getElementById("billing_address_error").innerText = "Please fill in the required fields";
+            values_missing = true;
+        }
+        else {
+            document.getElementById("billing_address_error").innerText = "";
+        }
+
+        if (values_missing) {
+            document.getElementById("response").innerText = "Some fields are missing";
+            return;
+        }
+        else {
+            document.getElementById("response").innerText = "";
+        }
+
+        let xhr = new XMLHttpRequest();
         xhr.open("POST", "/cart/purchase");
         xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-        xhr.send(JSON.stringify({items: [<%- item_ids %>]}));
+        xhr.send(JSON.stringify({
+            items: [<%- item_ids %>],
+            shipping_address: shipping_address,
+            billing_address: billing_address
+        }));
 
         xhr.onload = function () {
             document.getElementById("response").innerText = xhr.response;
@@ -48,4 +123,5 @@
         }
     }
 </script>
+</body>
 </html>

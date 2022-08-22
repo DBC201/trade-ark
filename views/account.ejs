@@ -1,13 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title><%= username %>></title>
+    <title>Account | Trade Ark</title>
+    <link rel="stylesheet" href="/public/stylesheet.css">
 </head>
 <body>
-    <h1>Hello <%= username %></h1>
-    <a href="/account/logout">Logout</a>
-    <br>
-    <a href="/item/add">Add Item</a>
+    <header id="main-header">Trade Ark</header>
+    
+    <nav id="navbar">
+        <div>
+            <a href="/">Home</a>
+            <% if (loggedin) { %>
+                <a href="/item/add">Add Item</a>
+                <a href="/cart">Cart</a>
+                <a href="/account">My Account</a>
+                <a href="/account/logout">Logout</a>
+            <% } else { %>
+                <a href="/account/register">Register</a>
+                <a href="/account/login">Login</a>
+            <% } %>
+        </div>
+    </nav>
+    
+    <div style="text-align: center;">
+        <h1>Listed Items:</h1>
+        <table id="items_table">
+            <tr>
+                <th>name</th>
+                <th>thumbnail</th>
+                <th>price</th>
+                <th>sold</th>
+            </tr>
+            <% let item_ids = []; %>
+            <% for (let i=0; i<listed_items.length; i++) { %>
+                <tr id="<%= listed_items[i].item_id %>" <% if (i % 2 === 0) { %> style="background-color: gray;" <% } %>>
+                    <td><%=listed_items[i].item_name %></td>
+                    <td><img id="img_<%= i %>" style="height: 125px" alt="no thumbnail"></td>
+                    <td>$<%= listed_items[i].item_price %></td>
+                    <td><%= listed_items[i].item_sold === 1 ? "yes" : "no" %></td>
+                </tr>
+            <script>
+                document.getElementById("img_<%= i %>").src = <%- listed_items[i].item_thumbnail %>[0];
+            </script>
+            <% } %>
+        </table>
+    </div>
 </body>
 </html>

@@ -31,7 +31,8 @@ router.get("/account", function (req, res, next) {
         req.session.redirect = req.session.originalUrl;
         res.redirect("/account/login");
     } else {
-        res.render("account", { username: req.session.username, items: utilsInitializer.itemsForSaleUtils().getUserItemIds(req.session.account_id) });
+        res.render("account", { seller_username: req.session.username,
+             listed_items: utilsInitializer.itemsForSaleUtils().getListedItems(req.session.account_id), loggedin: req.session.loggedin});
     }
 });
 
@@ -39,7 +40,7 @@ router.get("/account/login", function (req, res) {
     if (req.session.loggedin) {
         res.redirect("/");
     } else {
-        res.render("login_form");
+        res.render("login_form", {loggedin: req.session.loggedin});
     }
 });
 
@@ -88,7 +89,7 @@ router.get("/account/register", function (req, res) {
     if (req.session.loggedin) {
         res.redirect("/");
     } else {
-        res.render("register_form");
+        res.render("register_form", {loggedin: req.session.loggedin});
     }
 });
 
@@ -130,7 +131,7 @@ router.post("/account/register", async function (req, res, next) {
                 return res.send("email and username taken");
             } else if (matches[0].email === email) {
                 res.status(403);
-                return matches.send("email taken");
+                return res.send("email taken");
             } else if (matches[0].username === username) {
                 res.status(403);
                 return res.send("username taken");

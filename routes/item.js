@@ -11,17 +11,19 @@ router.get("/item/range", function (req, res, next) {
     res.send(utilsInitializer.itemsForSaleUtils().getItemRange(id_start, id_end));
 });
 
-router.get("/item", async function (req, res, next) {
+router.get("/item", function (req, res, next) {
     let item_id = req.query.item_id;
     if (!item_id) {
         res.status(400);
         return res.render("generic", { message: "Bad Request" });
     }
-    let item = await utilsInitializer.itemsForSaleUtils().getItem(item_id);
+    let item = utilsInitializer.itemsForSaleUtils().getItem(item_id);
     if (item === undefined) {
         res.status(404);
-        return res.render("generic", { message: "item not found" });
+        return res.render("generic", { message: "item not found", loggedin: req.session.loggedin });
     }
+
+    item.loggedin = req.session.loggedin;
 
     res.render("item", item);
 });
@@ -35,7 +37,7 @@ router.get("/item/add", function (req, res) {
         res.redirect("/account/login");
     }
     else {
-        res.render("item_form");
+        res.render("item_form", {loggedin: req.session.loggedin});
     }
 });
 
